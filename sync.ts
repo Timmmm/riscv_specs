@@ -80,7 +80,7 @@ async function generateIndexHtml(releases: Release[]) {
         <li><a href="./spec/20240411/unpriv-isa-asciidoc.html">Unprivileged</a></li>
     </ul>
 
-    <h2>All Relases</h2>
+    <h2>All Releases</h2>
 
     <ul>
     `;
