@@ -1,6 +1,5 @@
 #!/usr/bin/env -S deno run -A
-import { config } from "https://deno.land/x/dotenv@v3.2.2/mod.ts";
-import { ensureDir } from "https://deno.land/std@0.224.0/fs/mod.ts";
+import { ensureDir, existsSync } from "https://deno.land/std@0.224.0/fs/mod.ts";
 
 interface Release {
     id: number;
@@ -52,6 +51,13 @@ async function downloadHtmlAssets(releases: Release[]) {
 
         for (const asset of release.assets) {
             if (asset.name.endsWith(".html")) {
+                const assetPath = `${releaseDir}/${asset.name}`;
+
+                if (existsSync(assetPath)) {
+                    // Don't re-download.
+                    continue;
+                }
+
                 const assetResponse = await fetch(asset.browser_download_url);
 
                 if (!assetResponse.ok) {
@@ -59,7 +65,6 @@ async function downloadHtmlAssets(releases: Release[]) {
                     continue;
                 }
 
-                const assetPath = `${releaseDir}/${asset.name}`;
                 const fileData = await assetResponse.arrayBuffer();
                 await Deno.writeFile(assetPath, new Uint8Array(fileData));
                 console.log(`Downloaded ${asset.name} to ${assetPath}`);
