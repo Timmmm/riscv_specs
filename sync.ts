@@ -123,7 +123,6 @@ async function generateIndexHtml(releases: Release[]) {
     console.log("Generated index.html");
 }
 
-// Main execution
 async function main() {
     const owner = "riscv";
     const repo = "riscv-isa-manual";

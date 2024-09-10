@@ -1,0 +1,18 @@
+name: Download new specs if available
+on:
+  schedule:
+    - cron: "49 1 * * *" # 01:49 every day.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Sync specs
+      run: ./sync.ts
+    - name: Push new specs
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        ./commit.ts
