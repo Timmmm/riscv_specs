@@ -15,13 +15,21 @@ interface Asset {
 
 // GitHub API base URL.
 const GITHUB_API_URL = "https://api.github.com/repos";
+const GITHUB_AUTH = Deno.env.get("GITHUB_AUTH")
 
-// Fetch releases from a GitHub repository
-async function fetchReleases(owner: string, repo: string): Promise<Release[]> {
+function headers(): Headers {
     const headers = new Headers({
         "Accept": "application/vnd.github.v3+json",
         "User-Agent": "Deno",
     });
+    if (GITHUB_AUTH !== undefined) {
+        headers.append("Authorization", `Bearer ${GITHUB_AUTH}`);
+    }
+    return headers;
+}
+
+// Fetch releases from a GitHub repository
+async function fetchReleases(owner: string, repo: string): Promise<Release[]> {
 
     const releases: Release[] = []
 
@@ -30,7 +38,7 @@ async function fetchReleases(owner: string, repo: string): Promise<Release[]> {
         const url = `${GITHUB_API_URL}/${owner}/${repo}/releases?page=${page}&per_page=100`;
         console.log(`Fetching ${url}`);
 
-        const response = await fetch(url, { headers });
+        const response = await fetch(url, { headers: headers() });
 
         if (!response.ok) {
             throw new Error(`Failed to fetch releases: ${response.statusText}`);
