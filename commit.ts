@@ -3,6 +3,7 @@
 async function main() {
     const diff = await new Deno.Command("git", { args: ["diff"] }).output();
     if (diff.code === 1) {
+        console.log("Changes detected - committing & pushing.");
         // Changes detected.
         const add_status = await new Deno.Command("git", { args: ["--no-pager", "add", "."] }).output();
         if (add_status.code !== 0) {
@@ -16,6 +17,8 @@ async function main() {
         if (push_status.code !== 0) {
             throw Error("git add failed");
         }
+    } else {
+        console.log("No changes detected.");
     }
 }
 
