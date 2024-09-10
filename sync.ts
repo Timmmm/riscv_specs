@@ -24,14 +24,23 @@ async function fetchReleases(owner: string, repo: string): Promise<Release[]> {
         "User-Agent": "Deno",
     });
 
-    // We can get up to 100, which is enough to get the latest ratified ones.
-    const response = await fetch(`${GITHUB_API_URL}/${owner}/${repo}/releases?per_page=100`, { headers });
+    const releases: Release[] = []
 
-    if (!response.ok) {
-        throw new Error(`Failed to fetch releases: ${response.statusText}`);
+    for (let page = 0;; ++page) {
+
+        const response = await fetch(`${GITHUB_API_URL}/${owner}/${repo}/releases?page=${page}&per_page=100`, { headers });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch releases: ${response.statusText}`);
+        }
+
+        const releases_page: Release[] = await response.json();
+        if (releases_page.length === 0) {
+            break;
+        }
+        releases.push(...releases_page);
     }
 
-    const releases: Release[] = await response.json();
     return releases;
 }
 
