@@ -27,7 +27,10 @@ async function fetchReleases(owner: string, repo: string): Promise<Release[]> {
 
     for (let page = 0;; ++page) {
 
-        const response = await fetch(`${GITHUB_API_URL}/${owner}/${repo}/releases?page=${page}&per_page=100`, { headers });
+        const url = `${GITHUB_API_URL}/${owner}/${repo}/releases?page=${page}&per_page=100`;
+        console.log(`Fetching ${url}`);
+
+        const response = await fetch(url, { headers });
 
         if (!response.ok) {
             throw new Error(`Failed to fetch releases: ${response.statusText}`);
