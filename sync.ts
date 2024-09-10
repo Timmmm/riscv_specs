@@ -35,7 +35,8 @@ async function fetchReleases(owner: string, repo: string): Promise<Release[]> {
 
     for (let page = 0;; ++page) {
 
-        const url = `${GITHUB_API_URL}/${owner}/${repo}/releases?page=${page}&per_page=100`;
+        // Idiotically this starts at page 1.
+        const url = `${GITHUB_API_URL}/${owner}/${repo}/releases?page=${page + 1}&per_page=100`;
         console.log(`Fetching ${url}`);
 
         const response = await fetch(url, { headers: headers() });
@@ -126,7 +127,6 @@ async function generateIndexHtml(releases: Release[]) {
 
     htmlContent += "</ul></body></html>";
 
-    // Write the index.html file
     await Deno.writeTextFile("index.html", htmlContent);
     console.log("Generated index.html");
 }
