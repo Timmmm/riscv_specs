@@ -1,8 +1,11 @@
 #!/usr/bin/env -S deno run -A
 
 async function main() {
-    const diff = await new Deno.Command("git", { args: ["diff"] }).output();
-    if (diff.code === 1) {
+    const diff = await new Deno.Command("git", { args: ["status", "--porcelain"] }).output();
+    if (diff.code !== 0) {
+        throw Error("git diff failed");
+    }
+    if (diff.stdout.byteLength !== 0) {
         console.log("Changes detected - committing & pushing.");
         // Changes detected.
         const add_status = await new Deno.Command("git", { args: ["--no-pager", "add", "."] }).output();
