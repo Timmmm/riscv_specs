@@ -2,6 +2,7 @@ name: Download new specs if available
 on:
   schedule:
     - cron: "49 1 * * *" # 01:49 every day.
+  workflow_dispatch:
 
 jobs:
   build:
