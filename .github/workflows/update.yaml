@@ -4,6 +4,9 @@ on:
     - cron: "49 1 * * *" # 01:49 every day.
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
